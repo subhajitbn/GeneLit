@@ -32,7 +32,7 @@ Follow up with pathway analysis tools like [ShinyGO](http://bioinformatics.sdsta
 ![Input summary](./screenshots/input_summary.jpg)
 
 **3. Results table with retry support**  
-![Results table with retry support](./screenshots/results_table.jpg)
+![Results table with retry support](./screenshots/results_with_retry.jpg)
 
 
 ## 💻 How to run locally

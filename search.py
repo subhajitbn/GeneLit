@@ -2,12 +2,21 @@ import time
 import pandas as pd
 from Bio import Entrez
 
-# Set your email and optional API key here
-Entrez.email = "subhajitbn.maths@gmail.com"  # Replace with your email
-Entrez.api_key = "33aaabf511eb2a854b32fd07aa18553a3b09"     # Optional but recommended
 
 def build_query(gene, tumor_region, tumor_type_synonyms):
-    # Always include cancer
+    """
+    Constructs a PubMed query for a given gene, tumor region, and optional tumor type synonyms.
+
+    Args:
+        gene (str): The gene symbol to include in the query.
+        tumor_region (str): The selected tumor region, not directly used in the query.
+        tumor_type_synonyms (list of str): A list of synonyms for the tumor type to refine the query.
+
+    Returns:
+        str: A formatted PubMed query string that includes the gene, 'cancer', and optionally
+             synonyms for the tumor type in the title or abstract fields.
+    """
+
     if tumor_type_synonyms:
         # term_query = " OR ".join(terms)
         term_query = " OR ".join(f'{t}[Title/Abstract]' for t in tumor_type_synonyms)
@@ -21,9 +30,19 @@ def search_pubmed_data(query,
                        start_date,
                        end_date):
     """
-    Search PubMed using the given query and return the total hit count
-    and the article IDs of the most recent hits (up to max_hits).
+    Searches PubMed for articles based on the specified query and date range.
+
+    Parameters:
+    query (str): The search query to be used in PubMed.
+    recent_pubmedids_cutoff (int): Maximum number of recent PubMed IDs to retrieve.
+    start_date (datetime.date): The minimum date for the search cutoff.
+    end_date (datetime.date): The maximum date for the search cutoff.
+
+    Returns:
+    tuple: A tuple containing the count of articles found and a list of PubMed IDs. 
+           Returns (-1, []) in case of an exception.
     """
+        
     try:
         handle = Entrez.esearch(db = "pubmed", 
                                 term = query, 
@@ -40,11 +59,34 @@ def search_pubmed_data(query,
         return -1, []
 
 
-def validate_searched_pubmed_data(genes_list, tumor_region, tumor_type_synonyms, start_date, end_date, novel_cutoff, recent_pubmedids_cutoff, sleep_time=0.2):
+def validate_searched_pubmed_data(genes_list, tumor_region, tumor_type_synonyms, start_date, end_date, novel_cutoff, recent_pubmedids_cutoff, entrez_email, entrez_api_key, sleep_time=0.2):
     """
-    Validate genes in the CSV files under csv_dir using PubMed searches,
-    and save the results to output_dir.
+    Validates the results of a PubMed search for a given list of genes, 
+    tumor region, and optional tumor type synonyms. This function takes into
+    account the number of PubMed hits as well as the date range for the search.
+
+    Parameters:
+    genes_list (list of str): A list of gene symbols to search for.
+    tumor_region (str): The tumor region to search for.
+    tumor_type_synonyms (list of str): A list of synonyms for the tumor type.
+    start_date (datetime.date): The minimum date for the search cutoff.
+    end_date (datetime.date): The maximum date for the search cutoff.
+    novel_cutoff (int): The number of PubMed hits required for a gene to be considered "known".
+    recent_pubmedids_cutoff (int): The maximum number of recent PubMed IDs to retrieve.
+    entrez_email (str): Email address for Entrez API authentication.
+    entrez_api_key (str): API key for Entrez API authentication.
+    sleep_time (float, optional): The time in seconds to wait between searches. Defaults to 0.2.
+
+    Returns:
+    pandas.DataFrame: A DataFrame with columns for the gene symbol, number of PubMed hits, status (known/novel), and recent PubMed IDs.
     """
+    if entrez_email and entrez_api_key:
+        Entrez.email = entrez_email
+        Entrez.api_key = entrez_api_key
+        sleep_time = 0.2
+    else:
+        sleep_time = 0.5
+    
     results = []
     for gene in genes_list:
         query = build_query(gene, tumor_region, tumor_type_synonyms)

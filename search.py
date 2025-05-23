@@ -1,7 +1,8 @@
 import time
 import pandas as pd
 from Bio import Entrez
-
+from tenacity import retry, wait_exponential, stop_after_attempt, RetryCallState
+import streamlit as st
 
 def build_query(gene, tumor_region, tumor_type_synonyms):
     """
@@ -25,6 +26,18 @@ def build_query(gene, tumor_region, tumor_type_synonyms):
         return f'"{gene}"[Title/Abstract] AND cancer'
 
 
+def retry_logger(retry_state: RetryCallState):
+    gene = retry_state.args[0]  # assumes gene is first argument
+    attempt = retry_state.attempt_number
+    st.warning(f"Retrying PubMed search for gene '{gene}' (attempt {attempt}) due to error: {retry_state.outcome.exception()}")
+
+
+
+@retry(
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    stop=stop_after_attempt(3),
+    before_sleep=retry_logger
+)
 def search_pubmed_data(query, 
                        recent_pubmedids_cutoff, 
                        start_date,
@@ -55,8 +68,9 @@ def search_pubmed_data(query,
         ids = record.get("IdList", [])  # Get the list of PubMed IDs
         return count, ids
     except Exception as e:
-        print(f"Error during search: {e}")
-        return -1, []
+        print(f"Retrying due to error: {e}")
+        raise
+        # return -1, []
 
 
 def validate_searched_pubmed_data(genes_list, tumor_region, tumor_type_synonyms, start_date, end_date, novel_cutoff, recent_pubmedids_cutoff, entrez_email, entrez_api_key, sleep_time=0.2):

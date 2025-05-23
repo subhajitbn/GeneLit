@@ -90,13 +90,15 @@ with st.form("Inputs"):  # Start the form
         st.write("PubMed hits cutoff for novel genes:", novel_cutoff)
         st.write("How many recent pubmed ids to show:", recent_pubmedids_cutoff)
         
-        results_df = validate_searched_pubmed_data(genes_list = genes_list, 
-                                                   tumor_region = tumor_region_selected_opt, 
-                                                   tumor_type_synonyms = tumor_region_synonyms, 
-                                                   start_date = start_date, 
-                                                   end_date = end_date, 
-                                                   novel_cutoff = novel_cutoff, 
-                                                   recent_pubmedids_cutoff = recent_pubmedids_cutoff,
-                                                   entrez_email = entrez_email, 
-                                                   entrez_api_key = entrez_api_key)
-        st.write(results_df)
+        with st.status("Searching PubMed...", expanded=True) as status:
+            results_df = validate_searched_pubmed_data(genes_list = genes_list, 
+                                                       tumor_region = tumor_region_selected_opt, 
+                                                       tumor_type_synonyms = tumor_region_synonyms, 
+                                                       start_date = start_date, 
+                                                       end_date = end_date, 
+                                                       novel_cutoff = novel_cutoff, 
+                                                       recent_pubmedids_cutoff = recent_pubmedids_cutoff, 
+                                                       entrez_email = entrez_email, 
+                                                       entrez_api_key = entrez_api_key)
+            status.update(label="Done!", state="complete")
+            st.write(results_df)

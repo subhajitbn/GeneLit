@@ -26,13 +26,13 @@ Follow up with pathway analysis tools like [ShinyGO](http://bioinformatics.sdsta
 ## Screenshots
 
 **1. Input form**  
-<img src="./screenshots/input_form.jpg" width="500"/>
+![Input form](./screenshots/input_form.jpg)
 
 **2. Input summary**  
-<img src="./screenshots/input_summary.jpg" width="500"/>
+![Input summary](./screenshots/input_summary.jpg)
 
 **3. Results table with retry support**  
-<img src="./screenshots/results_with_retry.jpg" width="500"/>
+![Results table with retry support](./screenshots/results_table.jpg)
 
 
 ## 💻 How to run locally
@@ -40,7 +40,7 @@ Follow up with pathway analysis tools like [ShinyGO](http://bioinformatics.sdsta
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/your-username/genelit.git
+   git clone https://github.com/subhajitbn/genelit.git
    cd genelit
    ```
 

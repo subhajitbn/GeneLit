@@ -3,6 +3,21 @@ import datetime
 import streamlit as st
 
 st.title("GeneLit")
+st.subheader("PubMed literature status for your list of cancer-associated genes")
+with st.expander("ℹ️ How does the PubMed search work?"):
+    st.markdown(
+        """
+        We build a query for searching PubMed, using your inputs and the following criteria:
+
+        - ✅ We look for articles that mention the **gene symbol** and **at least one cancer-type synonym** in the **title or abstract**.
+        - ✅ The article must also mention the word **"cancer"** **anywhere** in the content.
+        - 📅 Only articles published within your **selected date range** are considered.
+
+        Simple, fast, and tailored for your literature review needs.
+        """
+    )
+
+st.header("Inputs")
 
 # INPUT 1: Do you have an email and api key for the PubMed search?
 have_email_and_api_key = st.checkbox("Do you have an email and api key for the PubMed search? This is optional, but provides faster results.")
@@ -21,7 +36,7 @@ with st.form("Inputs"):  # Start the form
 
     with left_col:
         # INPUT 2: Gene symbols list
-        genesymbols = st.text_area("Paste your gene symbols here", height=400)
+        genesymbols = st.text_area("Paste your gene symbols here", height=400, placeholder="One gene symbol per line")
         genes_list = [gene.strip() for gene in genesymbols.split("\n") if gene.strip()]
         
     with right_col:
@@ -78,27 +93,29 @@ with st.form("Inputs"):  # Start the form
     # Submit button
     submitted = st.form_submit_button("Submit")
 
-    if submitted:
-        # Process all inputs after submit
-        if entrez_email and entrez_api_key:
-            st.write("Email:", entrez_email)
-            st.write("API Key:", entrez_api_key)
-        st.write("Tumor Region:", tumor_region_selected_opt)
-        st.write("Selected Synonyms:", tumor_region_synonyms)
-        st.write("Start Date:", start_date)
-        st.write("End Date:", end_date)
-        st.write("PubMed hits cutoff for novel genes:", novel_cutoff)
-        st.write("How many recent pubmed ids to show:", recent_pubmedids_cutoff)
-        
-        with st.status("Searching PubMed...", expanded=True) as status:
-            results_df = validate_searched_pubmed_data(genes_list = genes_list, 
-                                                       tumor_region = tumor_region_selected_opt, 
-                                                       tumor_type_synonyms = tumor_region_synonyms, 
-                                                       start_date = start_date, 
-                                                       end_date = end_date, 
-                                                       novel_cutoff = novel_cutoff, 
-                                                       recent_pubmedids_cutoff = recent_pubmedids_cutoff, 
-                                                       entrez_email = entrez_email, 
-                                                       entrez_api_key = entrez_api_key)
-            status.update(label="Done!", state="complete")
-            st.write(results_df)
+if submitted:
+    # Process all inputs after submit
+    if entrez_email and entrez_api_key:
+        st.write("Email:", entrez_email)
+        st.write("API Key:", entrez_api_key)
+    st.write("Tumor Region:", tumor_region_selected_opt)
+    st.write("Selected Synonyms:", tumor_region_synonyms)
+    st.write("Start Date:", start_date)
+    st.write("End Date:", end_date)
+    st.write("PubMed hits cutoff for novel genes:", novel_cutoff)
+    st.write("How many recent pubmed ids to show:", recent_pubmedids_cutoff)
+    
+    st.header("Results")
+    
+    with st.status("Searching PubMed...", expanded=True) as status:
+        results_df = validate_searched_pubmed_data(genes_list = genes_list, 
+                                                    tumor_region = tumor_region_selected_opt, 
+                                                    tumor_type_synonyms = tumor_region_synonyms, 
+                                                    start_date = start_date, 
+                                                    end_date = end_date, 
+                                                    novel_cutoff = novel_cutoff, 
+                                                    recent_pubmedids_cutoff = recent_pubmedids_cutoff, 
+                                                    entrez_email = entrez_email, 
+                                                    entrez_api_key = entrez_api_key)
+        status.update(label="Done!", state="complete")
+        st.write(results_df)

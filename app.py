@@ -36,12 +36,15 @@ with st.form("Inputs"):  # Start the form
 
     with left_col:
         # INPUT 2: Gene symbols list
-        genesymbols = st.text_area("Paste your gene symbols here", height=400, placeholder="One gene symbol per line")
+        genesymbols = st.text_area("Paste your gene symbols here", 
+                                   height=400, 
+                                   placeholder="One gene symbol per line",
+                                   value="COL3A1\nPDGFRA\nCOL5A2")
         genes_list = [gene.strip() for gene in genesymbols.split("\n") if gene.strip()]
         
     with right_col:
         # INPUT 3: tumor region
-        tumor_region_opts = ["lung", "breast", "colorectum", "prostate", "stomach", "liver", "cervix", "thyroid", "esophagus", "ovary", "pancreas", "bladder", "kidney", "lymph nodes", "bone marrow", "skin", "brain", "oral cavity", "uterus"]
+        tumor_region_opts = ["colorectum", "lung", "breast", "prostate", "stomach", "liver", "cervix", "thyroid", "esophagus", "ovary", "pancreas", "bladder", "kidney", "lymph nodes", "bone marrow", "skin", "brain", "oral cavity", "uterus"]
         tumor_region_selected_opt = st.selectbox("Select tumor region", 
                                                  tumor_region_opts)
         
@@ -49,7 +52,7 @@ with st.form("Inputs"):  # Start the form
         tumor_region_synonyms_dict = {
             "lung": ["lung", "pulmonary", "pulmonic", "pulmonology", "bronchial", "bronchus", "respiratory tract"],
             "breast": ["breast", "mammary", "mammary gland", "mammary tissue", "breast tissue"],
-            "colorectum": ["colorectum", "colorectal", "colon", "colonic", "large intestine", "large bowel", "rectal", "rectum", "rectal tissue", "anus"],
+            "colorectum": ["colorectum", "colorectal", "colon", "rectal", "rectum", "colonic", "large intestine", "large bowel", "rectal tissue", "anus"],
             "prostate": ["prostate", "prostatic", "prostate gland"],
             "stomach": ["stomach", "gastric", "gastrium", "gastric mucosa", "gastrointestinal tract"],
             "liver": ["liver", "hepatic", "hepatic tissue", "hepatic parenchyma"],
@@ -69,11 +72,13 @@ with st.form("Inputs"):  # Start the form
         }
         tumor_region_synonyms_opts = tumor_region_synonyms_dict[tumor_region_selected_opt]
         tumor_region_synonyms = st.multiselect("Select multiple synonyms for the tumor region", 
-                                       tumor_region_synonyms_opts)
+                                               tumor_region_synonyms_opts,
+                                               default=tumor_region_synonyms_opts[:5])
         
         # INPUT 5: start date
         start_date = st.date_input("Min date cutoff for search", 
-                                   min_value=datetime.date(1900, 1, 1))
+                                   min_value=datetime.date(1900, 1, 1),
+                                   value=datetime.date(1900, 1, 1))
         
         # INPUT 6: end date
         end_date = st.date_input("Max date cutoff for search")

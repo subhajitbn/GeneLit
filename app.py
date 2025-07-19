@@ -17,6 +17,29 @@ with st.expander("ℹ️ How does the PubMed search work?"):
         """
     )
 
+st.markdown(
+    """
+    > 📚 **If you find GeneLit useful for your research**, please cite the GitHub repository:
+    >
+    > GitHub: [https://github.com/subhajitbn/GeneLit/](https://github.com/subhajitbn/GeneLit/)  
+    > Accessed on: {}
+    """.format(datetime.date.today().strftime("%B %d, %Y"))
+)
+
+with st.expander("📖 Show citation in BibTeX format"):
+    st.code(
+        '''@misc{genelit,
+  author       = {Subhajit Bandyopadhyay},
+  title        = {GeneLit: PubMed Literature Status App},
+  year         = {2025},
+  howpublished = {\\url{https://github.com/subhajitbn/GeneLit/}},
+  doi          = {10.5281/zenodo.16139861},
+  note         = {Accessed: ''' + datetime.date.today().strftime("%B %d, %Y") + '''}
+}''',
+        language="bibtex"
+    )
+
+
 st.header("Inputs")
 
 # INPUT 1: Do you have an email and api key for the PubMed search?

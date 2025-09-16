@@ -3,14 +3,14 @@ import datetime
 import streamlit as st
 
 st.title("GeneLit")
-st.subheader("PubMed literature status for your list of cancer-associated genes")
+st.subheader("PubMed literature status for your list of Alzheimer's and cancer-associated genes")
 with st.expander("ℹ️ How does the PubMed search work?"):
     st.markdown(
         """
         We build a query for searching PubMed, using your inputs and the following criteria:
 
-        - ✅ We look for articles that mention the **gene symbol** and **at least one cancer-type synonym** in the **title or abstract**.
-        - ✅ The article must also mention the word **"cancer"** **anywhere** in the content.
+        - ✅ We look for articles that mention the **gene symbol** and **at least one disease-type synonym** in the **title or abstract**.
+        - ✅ The article must also mention the word **"cancer"** or **"Alzheimer"** **anywhere** in the content.
         - 📅 Only articles published within your **selected date range** are considered.
 
         Simple, fast, and tailored for your literature review needs.
@@ -67,7 +67,7 @@ with st.form("Inputs"):  # Start the form
         
     with right_col:
         # INPUT 3: tumor region
-        tumor_region_opts = ["colorectum", "lung", "breast", "prostate", "stomach", "liver", "cervix", "thyroid", "esophagus", "ovary", "pancreas", "bladder", "kidney", "lymph nodes", "bone marrow", "skin", "brain", "oral cavity", "uterus"]
+        tumor_region_opts = ["colorectum", "lung", "breast", "prostate", "stomach", "liver", "cervix", "thyroid", "esophagus", "ovary", "pancreas", "bladder", "kidney", "lymph nodes", "bone marrow", "skin", "brain", "oral cavity", "uterus", "alzheimer"]
         tumor_region_selected_opt = st.selectbox("Select tumor region", 
                                                  tumor_region_opts)
         
@@ -91,7 +91,8 @@ with st.form("Inputs"):  # Start the form
             "skin": ["skin", "cutaneous", "dermal", "epidermis", "integumentary system"],
             "brain": ["brain", "cerebral", "cerebrum", "central nervous system", "CNS", "neural tissue", "encephalon"],
             "oral cavity": ["oral cavity", "mouth", "oral", "buccal", "oropharynx", "tongue", "floor of mouth"],
-            "uterus": ["uterus", "uterine", "womb", "endometrium", "myometrium"]
+            "uterus": ["uterus", "uterine", "womb", "endometrium", "myometrium"],
+            "Alzheimer's": ["alzheimer", "alzheimer's", "AD", "dementia", "neurodegenerative"]
         }
         tumor_region_synonyms_opts = tumor_region_synonyms_dict[tumor_region_selected_opt]
         tumor_region_synonyms = st.multiselect("Select multiple synonyms for the tumor region", 

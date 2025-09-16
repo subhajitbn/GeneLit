@@ -19,9 +19,12 @@ def build_query(gene, tumor_region, tumor_type_synonyms):
     """
 
     if tumor_type_synonyms:
-        # term_query = " OR ".join(terms)
-        term_query = " OR ".join(f'{t}[Title/Abstract]' for t in tumor_type_synonyms)
-        return f'"{gene}"[Title/Abstract] AND cancer AND ({term_query})'
+        if tumor_region == "alzheimer":    
+            term_query = " OR ".join(f'{t}[Title/Abstract]' for t in tumor_type_synonyms)
+            return f'"{gene}"[Title/Abstract] AND ({term_query})'
+        else:
+            term_query = " OR ".join(f'{t}[Title/Abstract]' for t in tumor_type_synonyms)
+            return f'"{gene}"[Title/Abstract] AND cancer AND ({term_query})'
     else:
         return f'"{gene}"[Title/Abstract] AND cancer'
 
